@@ -1,0 +1,63 @@
+حالا در فرم اصلی، بعد از InitializeComponent() یا در رویداد Load، لیست را ارسال کنید:
+
+csharp
+public MainForm()
+{
+    InitializeComponent();
+
+    var tabTitles = new List<string>
+    {
+        "نمایشگر اصلی",
+        "ویدئو وال شماره 1",
+        "تنظیمات",
+        "گزارش‌ها"
+    };
+
+    customTab1.SetTabs(tabTitles);
+}
+اگر علاوه بر عنوان، برای هر تب یک شناسه ثابت نیاز دارید، بهتر است یک مدل تعریف کنید:
+
+csharp
+public class TabDefinition
+{
+    public string Id { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+}
+و این overload را نیز به CustomTab اضافه کنید:
+
+csharp
+public void SetTabs(IEnumerable<TabDefinition>? tabDefinitions)
+{
+    ClearTabs();
+
+    if (tabDefinitions == null)
+        return;
+
+    foreach (TabDefinition definition in tabDefinitions
+                 .Where(x => x != null && !string.IsNullOrWhiteSpace(x.Title)))
+    {
+        AddNewTab(definition.Title.Trim(), definition.Id);
+    }
+
+    if (items.Count > 0)
+        SelectTab(items[0]);
+}
+نمونه استفاده با شناسه:
+
+csharp
+customTab1.SetTabs(new List<TabDefinition>
+{
+    new TabDefinition { Id = "main", Title = "نمایشگر اصلی" },
+    new TabDefinition { Id = "wall-01", Title = "ویدئو وال 1" },
+    new TabDefinition { Id = "settings", Title = "تنظیمات" }
+});
+در این حالت، شناسه هر تب از طریق e.Item.tabname در رویدادهای ItemSelected یا ItemClosing قابل دسترسی است:
+
+csharp
+customTab1.ItemSelected += (sender, e) =>
+{
+    string selectedTabId = e.Item.tabname;
+    string selectedTitle = e.Item.Title;
+
+    // نمایش محتوای متناظر با تب انتخاب شده
+};

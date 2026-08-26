@@ -1,0 +1,32 @@
+dashboardSidebar1.MenuItemClicked += DashboardSidebar1_MenuItemClicked;
+
+private void DashboardSidebar1_MenuItemClicked(object sender, DashboardMenuItemClickedEventArgs e)
+{
+    // دسترسی به آیتم کلیک شده از طریق e.Item
+    DashboardMenuItem clickedItem = e.Item;
+
+    // تشخیص کلید ناوبری یا شناسه منحصر‌به‌فرد گزینه کلیک شده
+    string navKey = clickedItem.NavigationKey;
+
+    // مدیریت تغییر وضعیت یا صفحات بر اساس گزینه کلیک شده
+    switch (navKey)
+    {
+        case "UserPasswordForm":
+            SetTileContent();
+            breadcrumbBar1.SetPath(@"main\profile\register");
+
+            break;
+        //case "UserCartable":
+        //    ShowInboxView();
+        //    break;
+        //case "PrivacyForm":
+        //    ShowSettingsView();
+        //    break;
+        //case "AboutForm":
+        //    ShowSettingsView();
+        //    break;
+        default:
+            MessageBox.Show($"گزینه تعریف نشده: {clickedItem.Title}");
+            break;
+    }
+}

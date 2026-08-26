@@ -1,0 +1,20 @@
+breadcrumbBar1.SetPath("اصلی/کاربران/ثبت نام");
+
+breadcrumbBar1.CrumbClicked += (s, e) =>
+{
+    MessageBox.Show(
+        "Index: " + e.Index +
+        "\nText: " + e.Text +
+        "\nPath: " + e.FullPathUpToHere);
+};
+
+
+breadcrumbBar1.CrumbClicked += BreadcrumbBar1_CrumbClicked;
+
+private void BreadcrumbBar1_CrumbClicked(object sender, BreadcrumbClickedEventArgs e)
+{
+    string code = e.Code;
+    string title = e.Title;
+
+    MessageBox.Show($"Code: {code}\nTitle: {title}");
+}

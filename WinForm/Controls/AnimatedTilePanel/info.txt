@@ -1,0 +1,39 @@
+    // فرض کنید نام کنترل شما animatedTilePanel1 است
+    animatedTilePanel1.ItemClicked += AnimatedTilePanel1_ItemClicked;
+
+
+    private void AnimatedTilePanel1_ItemClicked(object sender, DashboardTileItemClickedEventArgs e)
+    {
+        // e.Item حالا حاوی اطلاعات کاشی کلیک شده است (DashboardTileItem)
+        DashboardTileItem clickedItem = e.Item;
+
+        // حالا می‌توانید از اطلاعات clickedItem استفاده کنید:
+        int id = clickedItem.Id;
+        string title = clickedItem.Title;
+        string description = clickedItem.Description;
+        Image icon = clickedItem.Icon;
+        DashboardTileItemType itemType = clickedItem.ItemType;
+
+        // مثال: نمایش ID و Title گزینه انتخاب شده
+        MessageBox.Show($"گزینه انتخاب شده:\nID: {id}\nTitle: {title}");
+
+        // بر اساس نوع آیتم یا ID آن می‌توانید کارهای مختلفی انجام دهید:
+        switch (itemType)
+        {
+            case DashboardTileItemType.Form:
+                // اگر نوعش فرم است، فرم مربوطه را باز کنید
+                MessageBox.Show($"Opening form for ID: {id}");
+                break;
+            case DashboardTileItemType.GroupItems:
+                // اگر نوعش گروه است، کارهای مربوط به گروه را انجام دهید
+                MessageBox.Show($"Grouping items for ID: {id}");
+                break;
+            default:
+                // برای انواع دیگر یا IDهای خاص
+                if (id == 1) // مثال: اگر ID برابر 1 بود
+                {
+                    // کاری انجام بده
+                }
+                break;
+        }
+    }
