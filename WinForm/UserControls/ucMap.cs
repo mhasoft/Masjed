@@ -32,6 +32,14 @@ namespace WinForm.UserControls
 
     public partial class ucMap : UserControl, IMapBridgeHost
     {
+        private sealed class MasjedContactRow
+        {
+            public string Title { get; set; } = string.Empty;
+            public string Value { get; set; } = string.Empty;
+        }
+
+        public int MyProperty  = 0;
+
         #region Fields & Properties
 
         [Browsable(false)]
@@ -1277,6 +1285,8 @@ namespace WinForm.UserControls
                     txtMasjedName.Text =
                         masjed.Name;
 
+                    LoadMasjedContactGrids(masjed);
+
                     break;
 
 
@@ -1360,6 +1370,8 @@ namespace WinForm.UserControls
 
                         txtMasjedName.Text =
                             masjed.Name;
+
+                        LoadMasjedContactGrids(masjed);
 
 
                         if (masjed.Mahale_Id > 0)
@@ -1844,6 +1856,12 @@ namespace WinForm.UserControls
                     {
                         masjed.Name =
                             txtMasjedName.Text.Trim();
+
+                        masjed.Address =
+                            GetJsonFromGrid(dgvMasjedAddress);
+
+                        masjed.PhoneNumber =
+                            GetJsonFromGrid(dgvMasjedPhoneNumber);
                     }
 
                     break;
@@ -1861,6 +1879,182 @@ namespace WinForm.UserControls
 
                     break;
             }
+        }
+
+        #endregion
+
+
+        #region Masjed Contact JSON Helpers
+
+        private void LoadMasjedContactGrids(Masjed masjed)
+        {
+            LoadGridFromJson(
+                dgvMasjedAddress,
+                masjed?.Address);
+
+            LoadGridFromJson(
+                dgvMasjedPhoneNumber,
+                masjed?.PhoneNumber);
+        }
+
+        private string GetJsonFromGrid(DataGridView grid)
+        {
+            if (grid == null)
+            {
+                return "[]";
+            }
+
+            try
+            {
+                grid.EndEdit();
+            }
+            catch
+            {
+                // Continue with the values currently available in the grid.
+            }
+
+            List<MasjedContactRow> rows =
+                new List<MasjedContactRow>();
+
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                if (row.IsNewRow)
+                {
+                    continue;
+                }
+
+                string title =
+                    Convert.ToString(
+                        row.Cells.Count > 0
+                            ? row.Cells[0].Value
+                            : null)?.Trim() ?? string.Empty;
+
+                string value =
+                    Convert.ToString(
+                        row.Cells.Count > 1
+                            ? row.Cells[1].Value
+                            : null)?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(title) &&
+                    string.IsNullOrWhiteSpace(value))
+                {
+                    continue;
+                }
+
+                rows.Add(
+                    new MasjedContactRow
+                    {
+                        Title = title,
+                        Value = value
+                    });
+            }
+
+            return JsonSerializer.Serialize(rows);
+        }
+
+        private void LoadGridFromJson(
+            DataGridView grid,
+            string? json)
+        {
+            if (grid == null)
+            {
+                return;
+            }
+
+            grid.Rows.Clear();
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return;
+            }
+
+            try
+            {
+                using JsonDocument document =
+                    JsonDocument.Parse(json);
+
+                if (document.RootElement.ValueKind !=
+                    JsonValueKind.Array)
+                {
+                    return;
+                }
+
+                foreach (JsonElement element in
+                    document.RootElement.EnumerateArray())
+                {
+                    string title = string.Empty;
+                    string value = string.Empty;
+
+                    if (element.ValueKind == JsonValueKind.String)
+                    {
+                        value =
+                            element.GetString()?.Trim() ??
+                            string.Empty;
+                    }
+                    else if (element.ValueKind ==
+                             JsonValueKind.Object)
+                    {
+                        title =
+                            GetJsonPropertyString(
+                                element,
+                                "Title",
+                                "title",
+                                "عنوان");
+
+                        value =
+                            GetJsonPropertyString(
+                                element,
+                                "Value",
+                                "value",
+                                "Address",
+                                "PhoneNumber",
+                                "آدرس",
+                                "تلفن");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(title) &&
+                        string.IsNullOrWhiteSpace(value))
+                    {
+                        continue;
+                    }
+
+                    grid.Rows.Add(
+                        title.Trim(),
+                        value.Trim());
+                }
+            }
+            catch (JsonException)
+            {
+                // Invalid JSON is treated as an empty grid.
+            }
+            catch (ArgumentException)
+            {
+                // Invalid row data must not prevent the control from loading.
+            }
+        }
+
+        private static string GetJsonPropertyString(
+            JsonElement element,
+            params string[] propertyNames)
+        {
+            foreach (JsonProperty property in
+                element.EnumerateObject())
+            {
+                if (propertyNames.Any(
+                    name =>
+                        string.Equals(
+                            name,
+                            property.Name,
+                            StringComparison.OrdinalIgnoreCase)) &&
+                    property.Value.ValueKind ==
+                    JsonValueKind.String)
+                {
+                    return property.Value.GetString() ??
+                           string.Empty;
+                }
+            }
+
+            return string.Empty;
         }
 
         #endregion
@@ -1988,7 +2182,6 @@ namespace WinForm.UserControls
         }
 
         #endregion
-
 
         /*
          * =============================================================

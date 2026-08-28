@@ -9,6 +9,7 @@ namespace WinForm
 {
     public static class Program
     {
+        //hello
         public static IServiceProvider ServiceProvider = null!;
         public static DatabaseContext Database { get; private set; } = null!;
         /// <summary>

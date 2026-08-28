@@ -89,6 +89,8 @@ namespace WinForm.Services.Database.Insert.setMasjedAllRecord
                         {AppInformation.DatabasePrefix}.{srvEntityTableName.TableName<Masjed>()}
                     (
                         {srvEntityTableName.FieldName<Masjed>(x => x.Name)},
+                        {srvEntityTableName.FieldName<Masjed>(x => x.Address)},
+                        {srvEntityTableName.FieldName<Masjed>(x => x.PhoneNumber)},
                         {srvEntityTableName.FieldName<Masjed>(x => x.CoordinatesJson)},
                         {srvEntityTableName.FieldName<Masjed>(x => x.CreateAt)},
                         {srvEntityTableName.FieldName<Masjed>(x => x.Mahale_Id)}
@@ -96,6 +98,8 @@ namespace WinForm.Services.Database.Insert.setMasjedAllRecord
                     VALUES
                     (
                         @Name,
+                        @Address,
+                        @PhoneNumber,
                         @CoordinatesJson,
                         @CreateAt,
                         @Mahale_Id
@@ -116,6 +120,12 @@ namespace WinForm.Services.Database.Insert.setMasjedAllRecord
                     SET
                         {srvEntityTableName.FieldName<Masjed>(x => x.Name)} =
                             @Name,
+
+                        {srvEntityTableName.FieldName<Masjed>(x => x.Address)} =
+                            @Address,
+
+                        {srvEntityTableName.FieldName<Masjed>(x => x.PhoneNumber)} =
+                            @PhoneNumber,
 
                         {srvEntityTableName.FieldName<Masjed>(x => x.CoordinatesJson)} =
                             @CoordinatesJson,
@@ -240,6 +250,12 @@ namespace WinForm.Services.Database.Insert.setMasjedAllRecord
                                         Name =
                                             masjed.Name,
 
+                                        Address =
+                                            masjed.Address,
+
+                                        PhoneNumber =
+                                            masjed.PhoneNumber,
+
                                         CoordinatesJson =
                                             masjed.CoordinatesJson,
 
@@ -289,6 +305,12 @@ namespace WinForm.Services.Database.Insert.setMasjedAllRecord
                                 {
                                     Name =
                                         masjed.Name,
+
+                                    Address =
+                                        masjed.Address,
+
+                                    PhoneNumber =
+                                        masjed.PhoneNumber,
 
                                     CoordinatesJson =
                                         masjed.CoordinatesJson,

@@ -1,6 +1,0 @@
-نکته مهم معماری
-چون خودت تأکید کردی منطق DB نباید داخل کنترل باشد، من در کد کنترل فقط به سرویس‌های جداگانه ارجاع می‌دهم؛ یعنی فرض می‌گیرم بعداً این سرویس‌ها را هم مثل الگوی Masjed می‌سازیم:
-
-WinForm.Services.Database.Select.getMahaleAllRecords
-WinForm.Services.Database.Insert.setMahaleAllRecord
-اگر خواستی، در پیام بعدی می‌توانم خود سرویس‌های CRUD مربوط به Mahale را هم دقیقاً با همان الگو برایت بنویسم.
